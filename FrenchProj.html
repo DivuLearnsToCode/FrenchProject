@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>French History Timeline | Interactive Journey</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --accent-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --dark-gradient: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 100%);
+      --glass-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.18);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.8);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--dark-gradient);
+      background-attachment: fixed;
+      color: var(--text-primary);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+    
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      border-radius: 50%;
+      animation: float 15s infinite linear;
+      opacity: 0.3;
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.3; }
+      90% { opacity: 0.3; }
+      100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    }
+    
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      background: var(--glass-bg);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 1rem 2rem;
+      transition: all 0.3s ease;
+    }
+    
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: var(--primary-gradient);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      cursor: pointer;
+    }
+    
+    nav {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    
+    .nav-btn {
+      padding: 0.8rem 1.2rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      border-radius: 50px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .nav-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--primary-gradient);
+      transition: left 0.3s ease;
+      z-index: -1;
+    }
+    
+    .nav-btn:hover::before {
+      left: 0;
+    }
+    
+    .nav-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+    
+    .hero {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero-content {
+      z-index: 2;
+      max-width: 800px;
+      padding: 0 2rem;
+    }
+    
+    .hero h1 {
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, #ffffff 0%, #667eea 50%, #764ba2 100%);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: fadeInUp 1s ease;
+    }
+    
+    .hero p {
+      font-size: clamp(1.1rem, 3vw, 1.3rem);
+      color: var(--text-secondary);
+      margin-bottom: 3rem;
+      animation: fadeInUp 1s ease 0.2s both;
+    }
+    
+    .cta-btn {
+      display: inline-block;
+      padding: 1.2rem 3rem;
+      background: var(--accent-gradient);
+      border-radius: 50px;
+      text-decoration: none;
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      animation: fadeInUp 1s ease 0.4s both;
+      box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3);
+    }
+    
+    .cta-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 40px rgba(240, 147, 251, 0.4);
+    }
+    
+    main {
+      margin-top: 100px;
+      padding: 4rem 2rem;
+      max-width: 1400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+    
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 1rem;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--primary-gradient);
+    }
+    
+    .timeline-item {
+      position: relative;
+      margin-bottom: 4rem;
+      padding-left: 3rem;
+      opacity: 0;
+      transform: translateX(-50px);
+      transition: all 0.8s ease;
+    }
+    
+    .timeline-item.animate {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    
+    .timeline-dot {
+      position: absolute;
+      left: -2rem;
+      top: 2rem;
+      width: 20px;
+      height: 20px;
+      background: var(--accent-gradient);
+      border-radius: 50%;
+      border: 4px solid rgba(26, 26, 46, 1);
+      z-index: 2;
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(240, 147, 251, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(240, 147, 251, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(240, 147, 251, 0); }
+    }
+    
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 2.5rem;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+      transition: left 0.6s ease;
+    }
+    
+    .glass-card:hover::before {
+      left: 100%;
+    }
+    
+    .glass-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 30px 60px rgba(102, 126, 234, 0.2);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    .card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .card-icon {
+      width: 60px;
+      height: 60px;
+      background: var(--primary-gradient);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 1.5rem;
+      font-size: 1.5rem;
+    }
+    
+    .glass-card h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+    
+    .glass-card p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      line-height: 1.7;
+    }
+    
+    .date-badge {
+      display: inline-block;
+      background: rgba(102, 126, 234, 0.2);
+      border: 1px solid rgba(102, 126, 234, 0.3);
+      border-radius: 15px;
+      padding: 0.3rem 0.8rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #667eea;
+      margin-top: 0.5rem;
+    }
+    
+    footer {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--glass-border);
+      padding: 2rem;
+      text-align: center;
+      margin-top: 4rem;
+    }
+    
+    .footer-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      color: var(--text-secondary);
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .mobile-menu-toggle {
+      display: none;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      color: white;
+      font-size: 1.2rem;
+      padding: 0.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .mobile-menu-toggle:hover {
+      background: var(--primary-gradient);
+    }
+    
+    @media (max-width: 768px) {
+      nav {
+        display: none;
+      }
+      
+      .mobile-menu-toggle {
+        display: block;
+      }
+      
+      .hero {
+        padding: 0 1rem;
+      }
+      
+      .timeline {
+        padding-left: 1rem;
+      }
+      
+      .timeline-item {
+        padding-left: 2rem;
+      }
+      
+      .timeline-dot {
+        left: -1.5rem;
+      }
+      
+      .glass-card {
+        padding: 1.5rem;
+      }
+      
+      .card-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .card-icon {
+        margin-right: 0;
+        margin-bottom: 1rem;
+      }
+      
+      .nav-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      header {
+        padding: 0.8rem 1rem;
+      }
+      
+      .logo {
+        font-size: 1.4rem;
+      }
+      
+      main {
+        padding: 2rem 1rem;
+      }
+      
+      .glass-card {
+        padding: 1.2rem;
+      }
+      
+      .glass-card h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animation">
+    <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="particle" style="left: 20%; animation-delay: 2s;"></div>
+    <div class="particle" style="left: 30%; animation-delay: 4s;"></div>
+    <div class="particle" style="left: 40%; animation-delay: 6s;"></div>
+    <div class="particle" style="left: 50%; animation-delay: 8s;"></div>
+    <div class="particle" style="left: 60%; animation-delay: 10s;"></div>
+    <div class="particle" style="left: 70%; animation-delay: 12s;"></div>
+    <div class="particle" style="left: 80%; animation-delay: 14s;"></div>
+    <div class="particle" style="left: 90%; animation-delay: 16s;"></div>
+  </div>
+
+  <header>
+    <div class="header-content">
+      <div class="logo" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">Histoire de France</div>
+      <nav>
+        <a href="#gaul" class="nav-btn">Gaule</a>
+        <a href="#hundred-years" class="nav-btn">100 Ans</a>
+        <a href="#renaissance" class="nav-btn">Renaissance</a>
+        <a href="#louis-xiv" class="nav-btn">Louis XIV</a>
+        <a href="#napoleon" class="nav-btn">Napoléon</a>
+        <a href="#colonial" class="nav-btn">Colonial</a>
+        <a href="#ww1" class="nav-btn">WW1</a>
+        <a href="#ww2" class="nav-btn">WW2</a>
+        <a href="#mai68" class="nav-btn">Mai 68</a>
+      </nav>
+      <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>L'Histoire de France</h1>
+      <p>Découvrez les moments qui ont façonné la nation française à travers les siècles</p>
+      <a href="#timeline" class="cta-btn">Commencer le voyage</a>
+    </div>
+  </section>
+
+  <main id="timeline">
+    <div class="timeline">
+      
+      <div class="timeline-item" id="gaul">
+        <div class="timeline-dot"></div>
+        <div class="glass-card">
+          <div class="card-header">
+            <div class="card-icon">⚔️</div>
+            <div>
+              <h2>Conquête de la Gaule & Bataille d'Alésia</h2>
+              <div class="date-badge">52 av. J.-C.</div>
+            </div>
+          </div>
+          <p>Jules César mène les forces romaines dans la conquête de la Gaule, culminant avec le siège décisif d'Alésia. Après avoir piégé Vercingétorix avec des fortifications complexes, César remporte la victoire, mettant fin à l'indépendance gauloise et ouvrant la voie à des siècles d'influence romaine en France.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item" id="hundred-years">
+        <div class="timeline-dot"></div>
+        <div class="glass-card">
+          <div class="card-header">
+            <div class="card-icon">👑</div>
+            <div>
+              <h2>Guerre de Cent Ans & Jeanne d'Arc</h2>
+              <div class="date-badge">1337-1453</div>
+            </div>
+          </div>
+          <p>Conflit intermittent entre l'Angleterre et la France pour les droits de succession. Pendant l'heure la plus sombre, Jeanne d'Arc, une paysanne, revendique des visions d'inspiration divine et aide à lever le siège d'Orléans, changeant le cours de la guerre en faveur de la France et devenant un symbole éternel de courage.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item" id="renaissance">
+        <div class="timeline-dot"></div>
+        <div class="glass-card">
+          <div class="card-header">
+            <div class="card-icon">🎨</div>
+            <div>
+              <h2>Renaissance & Humanisme en France</h2>
+              <div class="date-badge">XVIe siècle</div>
+            </div>
+          </div>
+          <p>La Renaissance française du XVIe siècle introduit les idéaux humanistes, mettant l'accent sur l'éducation, les arts et l'étude des textes classiques inspirés par l'Italie. Des figures clés comme Michel de Montaigne et François Rabelais façonnent la vie intellectuelle française, établissant la France comme centre d'illumination.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item" id="louis-xiv">
+        <div class="timeline-dot"></div>
+        <div class="glass-card">
+          <div class="card-header">
+            <div class="card-icon">☀️</div>
+            <div>
+              <h2>Louis XIV : Le Roi-Soleil</h2>
+              <div class="date-badge">1643-1715</div>
+            </div>
+          </div>
+          <p>Louis XIV centralise le pouvoir et incarne la monarchie absolue en France. Il construit le grand château de Versailles, étend les territoires français et promeut la culture, mais ses guerres et politiques laissent la France avec de lourdes dettes. Son règne de 72 ans est le plus long de l'histoire européenne.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item" id="napoleon">
+        <div class="timeline-dot"></div>
+        <div class="glass-card">
+          <div class="card-header">
+            <div class="card-icon">🦅</div>
+            <div>
+              <h2>Napoléon & la Bataille de Waterloo</h2>
+              <div class="date-badge">1799-1815</div>
+            </div>
+          </div>
+          <p>Napoléon Bonaparte accède au pouvoir après la Révolution française, devient empereur et mène des guerres à travers l'Europe de 1799 à 1815. Sa défaite à la bataille de Waterloo en 1815 par une coalition de forces britanniques et alliées marque la fin de son règne et des changements majeurs pour la politique européenne.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item" id="colonial">
+        <div class="timeline-dot"></div>
+        <div class="glass-card">
+          <div class="card-header">
+            <div class="card-icon">🌍</div>
+            <div>
+              <h2>Colonisation & Décolonisation Françaises</h2>
+              <div class="date-badge">XVIe-XXe siècles</div>
+            </div>
+          </div>
+          <p>La France construit un empire colonial en Afrique, en Asie et en Amérique sur plusieurs siècles. Le XXe siècle voit la décolonisation, avec des mouvements d'indépendance et des changements mondiaux menant à la libération de nombreuses anciennes colonies et des connexions culturelles diverses dans le monde entier.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item" id="ww1">
+        <div class="timeline-dot"></div>
+        <div class="glass-card">
+          <div class="card-header">
+            <div class="card-icon">🪖</div>
+            <div>
+              <h2>France pendant la Première Guerre mondiale</h2>
+              <div class="date-badge">1914-1918</div>
+            </div>
+          </div>
+          <p>La France est une puissance alliée principale dans la Première Guerre mondiale. Le conflit dévaste sa population et ses infrastructures, surtout pendant la guerre de tranchées sur le sol français. La guerre se termine avec le traité de Versailles, mais laisse des défis sociaux et économiques durables.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item" id="ww2">
+        <div class="timeline-dot"></div>
+        <div class="glass-card">
+          <div class="card-header">
+            <div class="card-icon">🕊️</div>
+            <div>
+              <h2>France pendant la Seconde Guerre mondiale</h2>
+              <div class="date-badge">1940-1944</div>
+            </div>
+          </div>
+          <p>La France subit l'occupation par l'Allemagne nazie de 1940 à 1944. La Résistance française, le général Charles de Gaulle et les campagnes alliées sont cruciales pour la libération finale. La guerre remodèle la société, la politique et la position mondiale de la France.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item" id="mai68">
+        <div class="timeline-dot"></div>
+        <div class="glass-card">
+          <div class="card-header">
+            <div class="card-icon">✊</div>
+            <div>
+              <h2>Révoltes étudiantes de Mai 1968</h2>
+              <div class="date-badge">Mai 1968</div>
+            </div>
+          </div>
+          <p>Mai 1968 voit des protestations massives d'étudiants et de travailleurs qui secouent la société française. Les manifestations contestent l'autorité, préconisent des réformes sociales et mènent à des changements politiques, y compris la démission du président de Gaulle. Cette ère marque un tournant vers les valeurs modernes et l'activisme public accru.</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-content">
+      <p>© 2025 Histoire de France - Un voyage interactif à travers le temps</p>
+      <p>Découvrez les moments qui ont façonné la France moderne</p>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth scrolling for navigation
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Intersection Observer for timeline animations
+    const observerOptions = {
+      threshold: 0.2,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate');
+        }
+      });
+    }, observerOptions);
+
+    // Observe all timeline items
+    document.querySelectorAll('.timeline-item').forEach(item => {
+      observer.observe(item);
+    });
+
+    // Parallax effect for hero
+    window.addEventListener('scroll', () => {
+      const scrolled = window.pageYOffset;
+      const hero = document.querySelector('.hero');
+      const header = document.querySelector('header');
+      
+      if (hero) {
+        hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+      }
+      
+      // Header transparency effect
+      if (header) {
+        const opacity = Math.min(scrolled / 100, 1);
+        header.style.background = `rgba(255, 255, 255, ${0.08 + opacity * 0.02})`;
+      }
+    });
+
+    // Mobile menu functionality
+    function toggleMobileMenu() {
+      const nav = document.querySelector('nav');
+      if (nav.style.display === 'flex') {
+        nav.style.display = 'none';
+      } else {
+        nav.style.display = 'flex';
+        nav.style.position = 'absolute';
+        nav.style.top = '100%';
+        nav.style.left = '0';
+        nav.style.right = '0';
+        nav.style.background = 'var(--glass-bg)';
+        nav.style.backdropFilter = 'blur(20px)';
+        nav.style.border = '1px solid var(--glass-border)';
+        nav.style.flexDirection = 'column';
+        nav.style.padding = '1rem';
+      }
+    }
+
+    // Add loading animation
+    window.addEventListener('load', () => {
+      document.body.style.opacity = '1';
+    });
+
+    // Add some dynamic particles
+    function createParticle() {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDelay = Math.random() * 15 + 's';
+      document.querySelector('.bg-animation').appendChild(particle);
+      
+      setTimeout(() => {
+        particle.remove();
+      }, 15000);
+    }
+
+    // Create new particles periodically
+    setInterval(createParticle, 3000);
+  </script>
+</body>
+</html>
